@@ -164,7 +164,13 @@ def get_gbprepo_as_rosdep_data(gbpdistro):
             }
 
             # - package name: underscores must be dashes
-            package_name = 'ros-%s-%s' % (release_name, pkg)
+            origin_distro = getattr(repo, 'origin_distro', release_name)
+            extension_method = getattr(repo, 'extension_method', None)
+            if extension_method == 'binary_import' and origin_distro != release_name:
+                pkg_distro = origin_distro
+            else:
+                pkg_distro = release_name
+            package_name = 'ros-%s-%s' % (pkg_distro, pkg)
             package_name = package_name.replace('_', '-')
 
             for os_name in distro_file.platforms:
