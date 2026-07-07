@@ -23,11 +23,13 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt-get update && sudo apt-get install -y ruby
+      # yamllint disable rule:line-length
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install git+https://github.com/KmoM88/rosdistro.git@feature/rep-2015-v3-parser  # yamllint disable-line rule:line-length
+          pip install git+https://github.com/KmoM88/rosdistro.git@feature/rep-2015-v3-parser
           pip install -e .[test]
+      # yamllint enable rule:line-length
       - name: Run tests
         run: |
           pytest
