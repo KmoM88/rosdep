@@ -55,6 +55,9 @@ elif 'SKIP_PYTHON_SCRIPTS' in os.environ:
     kwargs['name'] += '_modules'
     kwargs['entry_points'] = {}
 else:
-    kwargs['install_requires'] += ['catkin_pkg >= 0.4.0', 'rospkg >= 1.4.0', 'rosdistro @ git+https://github.com/KmoM88/rosdistro.git@feature/rep-2015-v3-parser']
+    rosdistro_dep = 'rosdistro @ git+https://github.com/KmoM88/rosdistro.git@feature/rep-2015-v3-parser'
+    if os.environ.get('ROSDEP_LOCAL_DEV') == 'true':
+        rosdistro_dep = 'rosdistro'
+    kwargs['install_requires'] += ['catkin_pkg >= 0.4.0', 'rospkg >= 1.4.0', rosdistro_dep]
 
 setup(**kwargs)
