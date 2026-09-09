@@ -163,15 +163,19 @@ def get_gbprepo_as_rosdep_data(gbpdistro):
                 BREW_INSTALLER: {'packages': [homebrew_name]}
             }
 
-            # - package name: underscores must be dashes
-            origin_distro = getattr(repo, 'origin_distro', release_name)
-            extension_method = getattr(repo, 'extension_method', None)
-            if extension_method == 'binary_import' and origin_distro != release_name:
-                pkg_distro = origin_distro
+            # - binary package name resolved by rosdistro
+            if hasattr(repo, 'release_repository') and repo.release_repository and hasattr(repo.release_repository, 'get_binary_package_name'):
+                package_name = repo.release_repository.get_binary_package_name(pkg)
+            elif hasattr(distro_file, 'get_binary_package_name'):
+                package_name = distro_file.get_binary_package_name(pkg)
             else:
-                pkg_distro = release_name
-            package_name = 'ros-%s-%s' % (pkg_distro, pkg)
-            package_name = package_name.replace('_', '-')
+                origin_distro = getattr(repo, 'origin_distro', release_name)
+                extension_method = getattr(repo, 'extension_method', None)
+                if extension_method == 'binary_import' and origin_distro != release_name:
+                    pkg_distro = origin_distro
+                else:
+                    pkg_distro = release_name
+                package_name = ('ros-%s-%s' % (pkg_distro, pkg)).replace('_', '-')
 
             for os_name in distro_file.platforms:
                 if os_name not in rosdep_data[pkg]:
